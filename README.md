@@ -1,2 +1,2 @@
-# vulns-templates
-漏洞脚本
+# vuln-templates
+存放一些漏洞脚本。
